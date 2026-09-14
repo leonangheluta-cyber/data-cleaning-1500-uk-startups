@@ -1,5 +1,9 @@
 # UK Startups — Data Cleaning Pipeline (1,500 companies)
 
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![Pandas](https://img.shields.io/badge/Pandas-150458?style=for-the-badge&logo=pandas&logoColor=white)
+![Matplotlib](https://img.shields.io/badge/Matplotlib-white?style=for-the-badge&logo=matplotlib&logoColor=black)
+
 Turns messy, real-world scraped company data into clean, analysis-ready data — with every
 cleaning decision documented and nothing silently deleted.
 
