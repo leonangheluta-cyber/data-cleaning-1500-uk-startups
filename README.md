@@ -44,9 +44,16 @@ structured, verified dataset ready for analysis.
 
 ## Output
 
-- `Lead_cleaned.xlsx` — full cleaned dataset
-- `images/top_cities.png`, `images/foundation_years.png`, `images/funding_distribution.png` —
-  charts generated from the cleaned data
+`Lead_cleaned.xlsx` — full cleaned dataset, plus 3 charts generated automatically from it:
+
+**Company distribution by city**
+![Top cities](images/top_cities.png)
+
+**Founding-year trend**
+![Foundation years](images/foundation_years.png)
+
+**Funding-range breakdown**
+![Funding distribution](images/funding_distribution.png)
 
 ## Tech stack
 
