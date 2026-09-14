@@ -1,74 +1,71 @@
-# UK Startups — Data Cleaning & Visualization
+# UK Startups — Data Cleaning Pipeline (1,500 companies)
 
-A data cleaning and exploratory analysis project on 1,500 UK-based startups, scraped from
-[EU-Startups](https://www.eu-startups.com/directory/) with a scraper I built myself
-([eu-startups-lead-scraper](https://github.com/leonangheluta-cyber/eu-startups-lead-scraper)).
-This project focuses on the next step of the pipeline: taking the raw scraped data and turning
-it into something clean, consistent, and ready to analyze.
+Turns messy, real-world scraped company data into clean, analysis-ready data — with every
+cleaning decision documented and nothing silently deleted.
 
-## Files
+## The problem
 
-- `Cleaning_1500_uk_startups.ipynb` — full cleaning and visualization pipeline
-- `samples_data.xlsx` — small sample of the dataset (~25 rows), for reference. The full raw
-  and cleaned datasets (1,500 rows) aren't included in this repo to avoid redistributing the
-  full scraped content
-- `requirements.txt` — dependencies needed to run the notebook
-- `images/` — exported charts
+Raw scraped or exported business data is rarely usable as-is: the same city spelled five
+different ways, duplicate entries under slightly different company names, ambiguous fields
+that mix "city" and "country" values. Before this data can power a dashboard, a mailing list,
+or a market analysis, it needs a cleaning pass that a spreadsheet formula alone can't do
+reliably.
 
-## What this project does
+This project takes a real dataset of 1,500 UK-based startups (scraped with
+[eu-startups-lead-scraper](https://github.com/leonangheluta-cyber/eu-startups-lead-scraper))
+and runs it through a full cleaning pipeline, turning inconsistent raw data into a
+structured, verified dataset ready for analysis.
 
-**Deduplication**
-- Removed exact duplicate company entries (same `Name`), manually verified that no meaningful
-  information was lost by keeping the first occurrence
-- Investigated a separate case of two different companies sharing an identical `Description`
-  (e.g. "FLUX AI" / "FLUX.1 AI", "Vectorize" / "Vectorize io"). Checked the parent company
-  website linked on each listing and confirmed these are the same real company listed twice
-  under slightly different names on the source site. Since the names differ, these rows were
-  **not** dropped automatically — deciding which entry to keep would require manual judgment,
-  so both were left in place with a note.
+## What it does
 
-**Standardizing the `Based in` column**
-- Normalized casing (`title()` instead of `capitalize()`, to correctly handle multi-word city
-  names)
-- Split compound values like `"Birmingham, England, United Kingdom"` down to just the city
-- Fixed spelling inconsistencies found by manually reviewing the full list of unique values
-  (e.g. "Scottland" → "Scotland", "St albans" / "St" / "St. albans" → one consistent value,
-  "Greater london" / "Greater lonodn" → "London")
-- Result: reduced from **205** unique raw values to **184** clean city values
-- Flagged rows where the company only listed a country/region instead of an actual city (e.g.
-  "England", "UK", "Scotland") with a `Only county, not city` column, instead of deleting them —
-  keeping the data transparent rather than silently discarding it
+- **Deduplication** — removes exact duplicate entries, and separately flags likely
+  near-duplicates (same company listed twice under a slightly different name) for manual
+  review instead of guessing which row to drop
+- **Location standardization** — fixes casing, splits compound values like
+  `"Birmingham, England, United Kingdom"` down to the actual city, and corrects spelling
+  variants (`"Scottland"` → `"Scotland"`, `"Greater lonodn"` → `"London"`). Result: **205 → 184**
+  unique, consistent city values
+- **Transparent flagging over silent deletion** — rows where only a country/region was
+  listed (not an actual city) are kept and flagged in a dedicated column, never dropped
+  without a trace
+- **Automated reporting** — generates 3 charts directly from the cleaned data: company
+  distribution by city, founding-year trend, and funding-range breakdown
 
-**Other columns**
-- Stripped stray whitespace from `Description`
-- Verified `Foundation year` and `Funding` were already consistent (checked, no changes needed)
+## Sample: before → after
 
-## Visualizations
+| Raw `Based in`                        | Cleaned `Based in` |
+|----------------------------------------|---------------------|
+| `scottland`                            | Scotland            |
+| `ST ALBANS`                            | St. Albans          |
+| `Birmingham, England, United Kingdom`  | Birmingham          |
+| `Greater lonodn`                       | London              |
 
-Three matplotlib charts built from the cleaned data:
+*(illustrative example — not real dataset rows)*
 
-1. **Top 10 cities by number of companies** (bar chart, excluding country/region-only rows)
+## Output
 
-   ![Top cities](images/top_cities.png)
-
-2. **Company foundation years** — bar chart and line chart side by side, comparing yearly counts
-   and overall trend
-
-   ![Foundation years](images/foundation_years.png)
-
-3. **Funding ranges distribution** — bar chart of companies that have announced funding,
-   excluding "No funding announced yet"
-
-   ![Funding distribution](images/funding_distribution.png)
+- `Lead_cleaned.xlsx` — full cleaned dataset
+- `images/top_cities.png`, `images/foundation_years.png`, `images/funding_distribution.png` —
+  charts generated from the cleaned data
 
 ## Tech stack
 
-- Python
-- pandas — cleaning and analysis
-- matplotlib — visualization
+Python · pandas · matplotlib
+
+## How to run
+
+```
+git clone https://github.com/leonangheluta-cyber/data-cleaning-1500-uk-startups
+cd data-cleaning-1500-uk-startups
+pip install -r requirements.txt
+```
+
+Place a source file with the same structure (`Name`, `Based in`, `Description`,
+`Foundation year`, `Funding`) named `Lead_british-startups_companies.xlsx` in the project
+folder, then run `Cleaning_1500_uk_startups.ipynb` top to bottom.
 
 ## Notes
 
-This is part of a larger personal project — a web scraper written from scratch to extract
-startup data from EU-Startups. This notebook picks up where the scraper leaves off, focusing
-on realistic, messy real-world data cleaning rather than a synthetic dataset.
+The full raw and cleaned datasets (1,500 rows) aren't included in this repo to avoid
+redistributing scraped content — only a 25-row sample (`samples_data.xlsx`) is provided for
+reference.
